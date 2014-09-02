@@ -5,4 +5,14 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <string name="loading_please_wait">Loading. Please wait...</string>
+
+     <string name="app_descrip">Serves as a complete reference to all shlokas with their meanings.
+        Learn and Listen to the complete Dwadasha Stotra with detailed explanation about them.
+    </string>
+    <string name="app_help">Swipe up/down to browse through all the shlokas.
+    </string>
+    <string name="app_credits">All images/media are copyrights of the respective owners wherever applicable. Thanks to http://yousigma.com/poojaslokas.html for the audio.</string>
+    <string name="app_author">&#169; Varun M Tayur, 2014</string>
+    <string name="app_credits_title">Credits</string>
 </resources>

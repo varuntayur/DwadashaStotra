@@ -1,129 +1,111 @@
 package com.vtayur.dwadashastotra;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.graphics.drawable.ColorDrawable;
+import android.app.ProgressDialog;
+import android.content.SharedPreferences;
+import android.content.res.AssetManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
-import java.util.Locale;
+import com.etsy.android.grid.StaggeredGridView;
+import com.vtayur.dwadashastotra.data.DataProvider;
+import com.vtayur.dwadashastotra.data.DwadashaStotraMenu;
+import com.vtayur.dwadashastotra.data.Language;
+import com.vtayur.dwadashastotra.detail.StaggeredGridAdapter;
+
+import java.util.List;
 
 public class HomeActivity extends Activity {
-    private static final float MIN_SCALE = 0.75f;
-    private static final float MIN_ALPHA = 0.75f;
+
+    private static String TAG = "HomeActivity";
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        VerticalViewPager verticalViewPager = (VerticalViewPager) findViewById(R.id.verticalviewpager);
-        verticalViewPager.setAdapter(new DummyAdapter(getFragmentManager()));
-        verticalViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.pagemargin));
-        verticalViewPager.setPageMarginDrawable(new ColorDrawable(getResources().getColor(android.R.color.holo_green_dark)));
-        verticalViewPager.setPageTransformer(true, new ViewPager.PageTransformer() {
-            @Override
-            public void transformPage(View view, float position) {
-                int pageWidth = view.getWidth();
-                int pageHeight = view.getHeight();
-                if (position < -1) { // [-Infinity,-1)
-// This page is way off-screen to the left.
-                    view.setAlpha(0);
-                } else if (position <= 1) { // [-1,1]
-// Modify the default slide transition to shrink the page as well
-                    float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
-                    float vertMargin = pageHeight * (1 - scaleFactor) / 2;
-                    float horzMargin = pageWidth * (1 - scaleFactor) / 2;
-                    if (position < 0) {
-                        view.setTranslationY(vertMargin - horzMargin / 2);
-                    } else {
-                        view.setTranslationY(-vertMargin + horzMargin / 2);
+
+        setContentView(R.layout.activity_sgv);
+
+        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.loading_please_wait), true);
+
+        new DataProviderTask(this).execute(getAssets());
+    }
+
+
+    private class DataProviderTask extends AsyncTask<AssetManager, Void, Long> {
+
+        Activity currentActivity;
+
+        public DataProviderTask(Activity activity) {
+            this.currentActivity = activity;
+        }
+
+        protected void onPostExecute(Long result) {
+            final LayoutInflater inflater = currentActivity.getLayoutInflater();
+            final Activity activity = this.currentActivity;
+            runOnUiThread(new Runnable() {
+                public void run() {
+
+                    StaggeredGridView listView = (StaggeredGridView) findViewById(R.id.grid_view);
+
+                    View header = inflater.inflate(R.layout.list_item_header_footer, null);
+                    TextView txtHeaderTitle = (TextView) header.findViewById(R.id.txt_title);
+                    txtHeaderTitle.setText(getResources().getString(R.string.app_name));
+
+                    listView.addHeaderView(header);
+                    header.setClickable(false);
+
+                    StaggeredGridAdapter mAdapter = new StaggeredGridAdapter(activity, R.id.txt_line1);
+
+                    final List<String> sectionNames = DataProvider.getMenuNames();
+
+                    for (String data : sectionNames) {
+                        mAdapter.add(data);
                     }
-// Scale the page down (between MIN_SCALE and 1)
-                    view.setScaleX(scaleFactor);
-                    view.setScaleY(scaleFactor);
-// Fade the page relative to its size.
-                    view.setAlpha(MIN_ALPHA +
-                            (scaleFactor - MIN_SCALE) /
-                                    (1 - MIN_SCALE) * (1 - MIN_ALPHA));
-                } else { // (1,+Infinity]
-// This page is way off-screen to the right.
-                    view.setAlpha(0);
+                    listView.setAdapter(mAdapter);
+                    listView.setOnItemClickListener(getOnMenuClickListener(activity));
+
+                    SharedPreferences settings = getSharedPreferences(DataProvider.PREFS_NAME, 0);
+                    String isSettingAlreadySaved = settings.getString(DataProvider.LOCAL_LANGUAGE, "");
+                    if (isSettingAlreadySaved.isEmpty()) {
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString(DataProvider.LOCAL_LANGUAGE, Language.san.toString());
+
+                        editor.commit();
+
+                        Log.d(TAG, "Setting the default launch preference to Sanskrit at startup - " + settings.getString(DataProvider.LOCAL_LANGUAGE, ""));
+                    }
+                    progressDialog.dismiss();
                 }
-            }
-        });
-    }
+            });
+            Log.d(TAG, "Finished launching main-menu");
 
-    public class DummyAdapter extends FragmentPagerAdapter {
-        public DummyAdapter(FragmentManager fm) {
-            super(fm);
+        }
+
+        private AdapterView.OnItemClickListener getOnMenuClickListener(final Activity activity) {
+            return new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String item = (String) parent.getAdapter().getItem(position);
+
+                    String langSelected = getSharedPreferences(DataProvider.PREFS_NAME, 0).getString(DataProvider.LOCAL_LANGUAGE, "");
+                    DwadashaStotraMenu.getEnum(item).execute(activity, item, position, Language.getLanguageEnum(langSelected));
+
+                }
+            };
         }
 
         @Override
-        public Fragment getItem(int position) {
-// getItem is called to instantiate the fragment for the given page.
-// Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
+        protected Long doInBackground(AssetManager... assetManagers) {
 
-        @Override
-        public int getCount() {
-// Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return "PAGE 1";
-                case 1:
-                    return "PAGE 2";
-                case 2:
-                    return "PAGE 3";
-            }
-            return null;
-        }
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_layout, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.textview);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
+            DataProvider.init(getAssets());
+            Log.d(TAG, "Finished background task execution.");
+            return 1l;
         }
     }
 }
