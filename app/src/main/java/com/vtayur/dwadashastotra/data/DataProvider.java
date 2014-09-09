@@ -61,7 +61,7 @@ public class DataProvider {
     }
 
     public static int getBackgroundColor(int location) {
-        return mBackgroundColors.get(location);
+        return mBackgroundColors.get(location % mBackgroundColors.size());
     }
 
     public static void init(AssetManager am) {
