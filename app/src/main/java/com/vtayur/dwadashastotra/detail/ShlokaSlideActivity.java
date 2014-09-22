@@ -116,7 +116,7 @@ public class ShlokaSlideActivity extends FragmentActivity {
 
     private String getSelectedLanguage() {
         SharedPreferences sharedPreferences = getSharedPreferences(DataProvider.PREFS_NAME, 0);
-        return sharedPreferences.getString(DataProvider.LOCAL_LANGUAGE, Language.san.toString());
+        return sharedPreferences.getString(DataProvider.SHLOKA_DISP_LANGUAGE, Language.san.toString());
     }
 
     /**

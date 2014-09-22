@@ -98,7 +98,7 @@ public class ShlokaPageFragment extends Fragment {
         shlokaExplanation.setBackgroundColor(Color.TRANSPARENT);
         shlokaExplanation.loadData(shloka.getFormattedExplanation(), "text/html", null);
 
-        final String resourceName = sectionName.toLowerCase().concat(displayPageNumber).replaceAll(" ", "");
+        final String resourceName = sectionName.toLowerCase().concat(":").concat(displayPageNumber).replaceAll(" ", "").replaceAll(":","_");
 
         final int resNameId = curActivity.getResources().getIdentifier(resourceName, "raw", curActivity.getPackageName());
 

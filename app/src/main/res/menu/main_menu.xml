@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--<item android:title="Set Shloka Language">-->
+    <!--<menu>-->
+    <!--<group-->
+    <!--android:id="@+id/language_group"-->
+    <!--android:checkableBehavior="single">-->
+    <!--<item-->
+    <!--android:id="@+id/language_sanskrit"-->
+    <!--android:title="Sanskrit"/>-->
+    <!--<item-->
+    <!--android:id="@+id/language_kannada"-->
+    <!--android:title="Kannada"/>-->
+
+    <!--</group>-->
+    <!--</menu>-->
+    <!--</item>-->
+
+    <!--<item android:title="Auto Scroll Shloka">-->
+    <!--<menu>-->
+    <!--<group-->
+    <!--android:id="@+id/auto_scroll_group"-->
+    <!--android:checkableBehavior="single">-->
+    <!--<item-->
+    <!--android:id="@+id/auto_scroll_yes"-->
+    <!--android:title="Yes"/>-->
+    <!--<item-->
+    <!--android:id="@+id/auto_scroll_no"-->
+    <!--android:title="No"/>-->
+
+    <!--</group>-->
+    <!--</menu>-->
+    <!--</item>-->
+    <item
+        android:id="@+id/settings"
+        android:title="Settings"/>
+    <item
+        android:id="@+id/help"
+        android:title="Help"/>
+
+</menu>

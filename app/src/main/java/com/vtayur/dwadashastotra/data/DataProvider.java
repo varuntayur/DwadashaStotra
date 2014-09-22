@@ -25,7 +25,8 @@ public class DataProvider {
     private static final String TAG = "DataProvider";
 
     public static final String PREFS_NAME = "DwadashaStotra";
-    public static final String LOCAL_LANGUAGE = "localLanguage";
+    public static final String SHLOKA_DISP_LANGUAGE = "localLanguage";
+    public static final String AUTO_SCROLL_SHLOKA = "autoScrollShloka";
 
     private static Map<String, DwadashaStotra> lang2DwadashaStotra = new ConcurrentHashMap<String, DwadashaStotra>();
 
@@ -44,10 +45,6 @@ public class DataProvider {
     };
 
     private final static CharSequence[] languages = {"Sanskrit", "Kannada"};
-
-    public static CharSequence[] getLanguages() {
-        return languages;
-    }
 
     public static List<Integer> getBackgroundColorList() {
         return Collections.unmodifiableList(mBackgroundColors);
