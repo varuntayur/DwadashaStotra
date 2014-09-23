@@ -33,7 +33,12 @@ public class Note implements Serializable {
         if (getTitle() != null)
             title = "<b>".concat(getTitle()).concat("</b>");
 
-        return title.concat("<p align='justify'>").concat(getText().trim()).concat("</p>");
+        String trim = getText().trim();
+        StringBuilder content = new StringBuilder();
+        for (String splitNewlines : trim.split("\n")) {
+            content.append(splitNewlines).append("<br/>");
+        }
+        return title.concat("<p align='justify'>").concat(content.toString()).concat("</p>");
     }
 
     @Override

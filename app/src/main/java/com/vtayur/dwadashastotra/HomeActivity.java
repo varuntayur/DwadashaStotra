@@ -94,27 +94,27 @@ public class HomeActivity extends Activity {
                     }
                 });
 
-                final RadioGroup radioGrpAutoScroll = (RadioGroup) dialoglayout.findViewById
-                        (R.id.auto_scroll_selector);
-
-                radioGrpAutoScroll.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                        Log.d(TAG, "setOnCheckedChangeListener - radioGrpAutoScroll-" + checkedId);
-
-                        SharedPreferences settings = getSharedPreferences(DataProvider.PREFS_NAME, 0);
-                        SharedPreferences.Editor editor = settings.edit();
-                        RadioButton rb = (RadioButton) dialoglayout.findViewById(radioGrpAutoScroll.getCheckedRadioButtonId());
-                        editor.putString(DataProvider.AUTO_SCROLL_SHLOKA, YesNo.getYesNoEnum(rb.getText().toString()).toString());
-
-                        editor.commit();
-
-                        Log.d(TAG, "Auto Scroll settings saved - " + getSharedPreferences(DataProvider.PREFS_NAME, 0).getString(DataProvider.AUTO_SCROLL_SHLOKA, ""));
-                    }
-                });
-
-
+//                final RadioGroup radioGrpAutoScroll = (RadioGroup) dialoglayout.findViewById
+//                        (R.id.auto_scroll_selector);
+//
+//                radioGrpAutoScroll.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//                    @Override
+//                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+//
+//                        Log.d(TAG, "setOnCheckedChangeListener - radioGrpAutoScroll-" + checkedId);
+//
+//                        SharedPreferences settings = getSharedPreferences(DataProvider.PREFS_NAME, 0);
+//                        SharedPreferences.Editor editor = settings.edit();
+//                        RadioButton rb = (RadioButton) dialoglayout.findViewById(radioGrpAutoScroll.getCheckedRadioButtonId());
+//                        editor.putString(DataProvider.AUTO_SCROLL_SHLOKA, YesNo.getYesNoEnum(rb.getText().toString()).toString());
+//
+//                        editor.commit();
+//
+//                        Log.d(TAG, "Auto Scroll settings saved - " + getSharedPreferences(DataProvider.PREFS_NAME, 0).getString(DataProvider.AUTO_SCROLL_SHLOKA, ""));
+//                    }
+//                });
+//
+//
                 builderSettings.setPositiveButton("Close", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -122,7 +122,7 @@ public class HomeActivity extends Activity {
                         Log.d(TAG, "Close button clicked " + which);
                     }
                 });
-
+//
                 builderSettings.show();
                 break;
 
