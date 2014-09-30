@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,8 +30,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.vtayur.dwadashastotra.data.model.Shloka;
 import com.vtayur.dwadashastotra.R;
+import com.vtayur.dwadashastotra.data.model.Shloka;
+
 import java.util.List;
 
 public class ShlokaPageFragment extends Fragment {
@@ -47,7 +47,7 @@ public class ShlokaPageFragment extends Fragment {
 
     private int mPageNumber;
 
-    private MediaPlayer mediaPlayer;
+    private int resNameId;
 
     public ShlokaPageFragment() {
         // required - other changing orientation will cause issues
@@ -98,11 +98,7 @@ public class ShlokaPageFragment extends Fragment {
         shlokaExplanation.setBackgroundColor(Color.TRANSPARENT);
         shlokaExplanation.loadData(shloka.getFormattedExplanation(), "text/html", null);
 
-        final String resourceName = sectionName.toLowerCase().concat(":").concat(displayPageNumber).replaceAll(" ", "").replaceAll(":","_");
-
-        final int resNameId = curActivity.getResources().getIdentifier(resourceName, "raw", curActivity.getPackageName());
-
-        Log.d(TAG, "ID fetched for packageName " + curActivity.getPackageName() + " - " + resourceName + " -> " + resNameId);
+        resNameId = getResourceName(curActivity);
 
         ImageButton pauseButton = (ImageButton) rootView.findViewById(R.id.imageButtonPause);
         setVisibility(resNameId, pauseButton);
@@ -113,9 +109,7 @@ public class ShlokaPageFragment extends Fragment {
                 Toast.makeText(curActivity, "Pausing sound",
                         Toast.LENGTH_SHORT).show();
 
-                if (mediaPlayer == null) return;
-
-                mediaPlayer.pause();
+                ShlokaMediaPlayer.pause();
             }
         });
 
@@ -128,20 +122,32 @@ public class ShlokaPageFragment extends Fragment {
 
                 if (resNameId == 0) return;
 
-                if (mediaPlayer != null && mediaPlayer.isPlaying()) return;
+                String playStatus = ShlokaMediaPlayer.play(getActivity(), resNameId);
+
+                if (!playStatus.isEmpty()) {
+
+                    Toast.makeText(curActivity, playStatus,
+                            Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
 
                 Toast.makeText(curActivity, "Playing sound",
                         Toast.LENGTH_SHORT).show();
-
-
-                mediaPlayer = MediaPlayer.create(getActivity(), resNameId);
-                mediaPlayer.start();
 
             }
         });
 
 
         return rootView;
+    }
+
+    private int getResourceName(Activity curActivity) {
+        String displayPageNumber = String.valueOf(mPageNumber + 1);
+        String resourceName = sectionName.toLowerCase().concat(":").concat(displayPageNumber).replaceAll(" ", "").replaceAll(":", "_");
+        int resNameId = curActivity.getResources().getIdentifier(resourceName, "raw", curActivity.getPackageName());
+        Log.d(TAG, "ID fetched for packageName " + curActivity.getPackageName() + " - " + resourceName + " -> " + resNameId);
+        return resNameId;
     }
 
     private void setVisibility(int resNameId, ImageButton pauseButton) {
@@ -153,16 +159,12 @@ public class ShlokaPageFragment extends Fragment {
 
     @Override
     public void onStop() {
+        super.onStop();
 
-        if (mediaPlayer == null){
-            super.onStop();
-            return;
-        }
+        if (ShlokaMediaPlayer.isPlaying()) {
 
-        if (mediaPlayer.isPlaying()) {
-
-            Log.d(TAG, "************ Attempting to stop media if it is playing *********");
-            mediaPlayer.pause();
+            Log.d(TAG, "************ Attempting to stop media that was initiated with this fragment *********");
+            ShlokaMediaPlayer.pause();
             Log.d(TAG, "************ Pause media was successful *********");
         }
 
