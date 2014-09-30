@@ -4,7 +4,8 @@
               android:id="@+id/dialog_settings"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="@android:color/darker_gray">
 
     <LinearLayout
         android:orientation="vertical"

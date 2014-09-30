@@ -56,7 +56,7 @@ public class StaggeredGridAdapter extends ArrayAdapter<String> {
 
         convertView.setBackgroundResource(mBackgroundColors.get(backgroundIndex));
 
-        Log.d(TAG, "getView position:" + position + " h:" + positionHeight);
+//        Log.d(TAG, "getView position:" + position + " h:" + positionHeight);
 
 //        vh.txtLineOne.setHeightRatio(positionHeight);
         vh.txtLineOne.setHeightRatio(1.5);
@@ -74,7 +74,7 @@ public class StaggeredGridAdapter extends ArrayAdapter<String> {
         if (ratio == 0) {
             ratio = getRandomHeightRatio();
             sPositionHeightRatios.append(position, ratio);
-            Log.d(TAG, "getPositionRatio:" + position + " ratio:" + ratio);
+//            Log.d(TAG, "getPositionRatio:" + position + " ratio:" + ratio);
         }
         return ratio;
     }
