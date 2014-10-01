@@ -120,7 +120,7 @@ public class HomeActivity extends Activity {
 
                     SharedPreferences settings = getSharedPreferences(DataProvider.PREFS_NAME, 0);
                     String isLocalLangAlreadySaved = settings.getString(DataProvider.SHLOKA_DISP_LANGUAGE, "");
-                    String isAutoScrollAlreadySaved = settings.getString(DataProvider.AUTO_SCROLL_SHLOKA, "");
+                    String isLearningModeSaved = settings.getString(DataProvider.LEARNING_MODE, "");
                     if (isLocalLangAlreadySaved.isEmpty()) {
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString(DataProvider.SHLOKA_DISP_LANGUAGE, Language.san.toString());
@@ -130,13 +130,13 @@ public class HomeActivity extends Activity {
                         Log.d(TAG, "Setting the default launch language preference to Sanskrit at startup - " + settings.getString(DataProvider.SHLOKA_DISP_LANGUAGE, ""));
                     }
 
-                    if (isAutoScrollAlreadySaved.isEmpty()) {
+                    if (isLearningModeSaved.isEmpty()) {
                         SharedPreferences.Editor editor = settings.edit();
-                        editor.putString(DataProvider.AUTO_SCROLL_SHLOKA, YesNo.no.toString());
+                        editor.putString(DataProvider.LEARNING_MODE, YesNo.yes.toString());
 
                         editor.commit();
 
-                        Log.d(TAG, "Setting the default launch auto scroll preference to 'no' - " + settings.getString(DataProvider.AUTO_SCROLL_SHLOKA, ""));
+                        Log.d(TAG, "Setting the default learn mode preference to 'Yes' - " + settings.getString(DataProvider.LEARNING_MODE, ""));
                     }
                     progressDialog.dismiss();
                 }

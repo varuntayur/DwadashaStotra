@@ -5,7 +5,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@android:color/darker_gray">
+              android:background="@android:color/transparent">
 
     <LinearLayout
         android:orientation="vertical"
@@ -45,42 +45,49 @@
         </RadioGroup>
     </LinearLayout>
 
-    <!--<LinearLayout-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:padding="10dp">-->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
-        <!--<TextView-->
-            <!--android:id="@+id/autoscroll"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Auto Scroll Shloka"-->
-            <!--android:textStyle="bold"/>-->
+        <TextView
+            android:id="@+id/learningMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Learning Mode"
+            android:textStyle="bold"/>
 
-        <!--<View-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="1dp"-->
-            <!--android:background="@android:color/darker_gray"/>-->
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
-        <!--<RadioGroup-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="fill_parent" android:id="@+id/auto_scroll_selector">-->
+        <RadioGroup
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" android:id="@+id/learning_mode_selector">
 
-            <!--<RadioButton-->
-                <!--android:id="@+id/auto_scroll_yes"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:checked="true"-->
-                <!--android:text="Yes"/>-->
+            <RadioButton
+                android:id="@+id/learn_mode_yes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="On"/>
 
-            <!--<RadioButton-->
-                <!--android:id="@+id/auto_scroll_no"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="No"/>-->
-        <!--</RadioGroup>-->
-    <!--</LinearLayout>-->
+            <RadioButton
+                android:id="@+id/learn_mode_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Off"/>
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(Turning this Off will display all shlokas in one page)"
+            android:textStyle=""/>
+    </LinearLayout>
 
 </LinearLayout>

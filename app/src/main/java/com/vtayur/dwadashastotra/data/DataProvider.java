@@ -26,7 +26,7 @@ public class DataProvider {
 
     public static final String PREFS_NAME = "DwadashaStotra";
     public static final String SHLOKA_DISP_LANGUAGE = "localLanguage";
-    public static final String AUTO_SCROLL_SHLOKA = "autoScrollShloka";
+    public static final String LEARNING_MODE = "learningMode";
 
     private static Map<String, DwadashaStotra> lang2DwadashaStotra = new ConcurrentHashMap<String, DwadashaStotra>();
 

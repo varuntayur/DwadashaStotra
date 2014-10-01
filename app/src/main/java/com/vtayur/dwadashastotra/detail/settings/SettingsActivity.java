@@ -10,6 +10,7 @@ import android.widget.RadioGroup;
 import com.vtayur.dwadashastotra.R;
 import com.vtayur.dwadashastotra.data.DataProvider;
 import com.vtayur.dwadashastotra.data.Language;
+import com.vtayur.dwadashastotra.data.YesNo;
 
 /**
  * Created by vtayur on 9/30/2014.
@@ -42,6 +43,23 @@ public class SettingsActivity extends Activity {
             }
         });
 
+        final RadioGroup radioGrpLearnModeSelector = (RadioGroup) findViewById(R.id.learning_mode_selector);
+
+        radioGrpLearnModeSelector.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                SharedPreferences settings = getSharedPreferences(DataProvider.PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                RadioButton rb = (RadioButton) findViewById(radioGrpLangSelector.getCheckedRadioButtonId());
+                editor.putString(DataProvider.LEARNING_MODE, YesNo.getYesNoEnum(rb.getText().toString()).toString());
+
+                editor.commit();
+
+                Log.d(TAG, "setOnCheckedChangeListener - Learning Mode settings saved - " + getSharedPreferences(DataProvider.PREFS_NAME, 0).getString(DataProvider.LEARNING_MODE, ""));
+            }
+        });
+
     }
 
     @Override
@@ -50,8 +68,12 @@ public class SettingsActivity extends Activity {
 
         SharedPreferences settings = getSharedPreferences(DataProvider.PREFS_NAME, 0);
         String savedLocalLang = settings.getString(DataProvider.SHLOKA_DISP_LANGUAGE, "");
+        String learningMode = settings.getString(DataProvider.LEARNING_MODE, "");
         if (savedLocalLang.isEmpty()) {
             Log.d(TAG, "Language settings are not set - will set to sanskrit and continue");
+        }
+        if (learningMode.isEmpty()) {
+            Log.d(TAG, "Learning mode settings are not set - will set to Yes and continue");
         }
         RadioButton rbSanskrit = (RadioButton) findViewById(R.id.language_sanskrit);
         RadioButton rbKannada = (RadioButton) findViewById(R.id.language_kannada);
@@ -61,6 +83,15 @@ public class SettingsActivity extends Activity {
             rbKannada.setChecked(true);
         }
 
-        Log.d(TAG, "Language settings are restored - " + getSharedPreferences(DataProvider.PREFS_NAME, 0).getString(DataProvider.SHLOKA_DISP_LANGUAGE, ""));
+        RadioButton rbLearnModeYes = (RadioButton) findViewById(R.id.learn_mode_yes);
+        RadioButton rbLearnModeNo = (RadioButton) findViewById(R.id.learn_mode_no);
+        if (YesNo.getYesNoEnum(learningMode).equals(YesNo.yes)) {
+            rbLearnModeYes.setChecked(true);
+        } else {
+            rbLearnModeNo.setChecked(true);
+        }
+
+        Log.d(TAG, "Settings are restored for Language - " + getSharedPreferences(DataProvider.PREFS_NAME, 0).getString(DataProvider.SHLOKA_DISP_LANGUAGE, ""));
+        Log.d(TAG, "Settings are restored for Learning mode - " + getSharedPreferences(DataProvider.PREFS_NAME, 0).getString(DataProvider.LEARNING_MODE, ""));
     }
 }

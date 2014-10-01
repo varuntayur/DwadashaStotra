@@ -2,12 +2,13 @@ package com.vtayur.dwadashastotra.data;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
-
 
 import com.vtayur.dwadashastotra.data.model.DwadashaStotra;
 import com.vtayur.dwadashastotra.data.model.Section;
-import com.vtayur.dwadashastotra.detail.stotra.StotraBrowseActivity;
+import com.vtayur.dwadashastotra.detail.stotra.StotraInOnePageActivity;
+import com.vtayur.dwadashastotra.detail.stotra.StotraSlideBrowseActivity;
 
 import java.io.Serializable;
 
@@ -19,7 +20,16 @@ public enum DwadashaStotraMenu {
     DEFAULT("Default") {
         @Override
         public void execute(Activity activity, String item, int position, Language language) {
-            Intent intent = new Intent(activity, StotraBrowseActivity.class);
+            Intent intent = null;
+            SharedPreferences settings = activity.getSharedPreferences(DataProvider.PREFS_NAME, 0);
+
+            String learningMode = settings.getString(DataProvider.LEARNING_MODE, "");
+
+            if (learningMode.equalsIgnoreCase(YesNo.yes.toString()))
+                intent = new Intent(activity, StotraSlideBrowseActivity.class);
+            else
+                intent = new Intent(activity, StotraInOnePageActivity.class);
+
             intent.putExtra("sectionName", item);
             intent.putExtra("menuPosition", position);
 

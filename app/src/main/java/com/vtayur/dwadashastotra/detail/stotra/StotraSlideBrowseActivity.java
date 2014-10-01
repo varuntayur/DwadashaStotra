@@ -48,7 +48,7 @@ import java.util.List;
  *
  * @see StotraPageFragment
  */
-public class StotraBrowseActivity extends FragmentActivity {
+public class StotraSlideBrowseActivity extends FragmentActivity {
 
     private static String TAG = "ShlokaSlideActivity";
 
