@@ -2,6 +2,8 @@ package com.vtayur.dwadashastotra.detail;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
+import android.os.PowerManager;
+import android.util.Log;
 
 /**
  * Created by vtayur on 9/30/2014.
@@ -9,30 +11,35 @@ import android.media.MediaPlayer;
 public class ShlokaMediaPlayer {
 
     private static MediaPlayer mediaPlayer;
-    private static String curResNameId;
+    private static final String TAG = "ShlokaMediaPlayer";
 
     public static void pause() {
-        if (mediaPlayer != null)
+        if (mediaPlayer != null) {
             mediaPlayer.pause();
+        }
     }
 
-    public static String play(Activity activity, int resId) {
-        if (mediaPlayer != null && mediaPlayer.isPlaying())
-            return "Media player is already playing another track. Please try again after that completes.";
+    public static void release() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+    }
 
+
+    public static String play(Activity activity, int resId) {
+
+        try {
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                return "Media player is already playing another track. Please try again after that completes.";
+            }
+        } catch (IllegalStateException ex) {
+            Log.e(TAG, "Exception while trying to fetch mediaplayer status.");
+        }
         mediaPlayer = MediaPlayer.create(activity, resId);
-        curResNameId = String.valueOf(resId);
+        mediaPlayer.setWakeMode(activity.getBaseContext(), PowerManager.SCREEN_DIM_WAKE_LOCK);
         mediaPlayer.start();
 
         return "";
-    }
-
-    public static boolean isPlaying() {
-
-        if (mediaPlayer != null)
-            return mediaPlayer.isPlaying();
-
-        return Boolean.FALSE;
     }
 
 }

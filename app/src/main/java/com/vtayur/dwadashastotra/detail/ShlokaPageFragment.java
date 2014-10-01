@@ -71,11 +71,36 @@ public class ShlokaPageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        return intializeView(inflater, container);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+
+        Log.d(TAG, "************ Attempting to stop media that was initiated with this fragment *********");
+        ShlokaMediaPlayer.release();
+        Log.d(TAG, "************ Pause media was successful *********");
+
+        super.onStop();
+    }
+
+    /**
+     * Returns the page number represented by this fragment object.
+     */
+    public int getPageNumber() {
+        return shlokas.size();
+    }
+
+    private ViewGroup intializeView(LayoutInflater inflater, ViewGroup container) {
+
+        final Activity curActivity = this.getActivity();
+
         // Inflate the layout containing a title and body text.
         ViewGroup rootView = (ViewGroup) inflater
                 .inflate(R.layout.fragment_shloka_slide_page, container, false);
-
-        final Activity curActivity = this.getActivity();
 
         String displayPageNumber = String.valueOf(mPageNumber + 1);
 
@@ -88,11 +113,9 @@ public class ShlokaPageFragment extends Fragment {
         TextView shlokaText = (TextView) rootView.findViewById(R.id.shlokalocallangtext);
         shlokaText.setTypeface(customTypeface);
         shlokaText.setText(localLangShloka.getText());
-        shlokaText.setTypeface(shlokaText.getTypeface(), Typeface.BOLD);
 
         TextView shlokaenText = (TextView) rootView.findViewById(R.id.shlokaentext);
         shlokaenText.setText(shloka.getText());
-        shlokaenText.setTypeface(shlokaText.getTypeface(), Typeface.BOLD);
 
         WebView shlokaExplanation = (WebView) rootView.findViewById(R.id.shlokaexplanation);
         shlokaExplanation.setBackgroundColor(Color.TRANSPARENT);
@@ -137,8 +160,6 @@ public class ShlokaPageFragment extends Fragment {
 
             }
         });
-
-
         return rootView;
     }
 
@@ -157,24 +178,5 @@ public class ShlokaPageFragment extends Fragment {
             pauseButton.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
 
-        if (ShlokaMediaPlayer.isPlaying()) {
-
-            Log.d(TAG, "************ Attempting to stop media that was initiated with this fragment *********");
-            ShlokaMediaPlayer.pause();
-            Log.d(TAG, "************ Pause media was successful *********");
-        }
-
-        super.onStop();
-    }
-
-    /**
-     * Returns the page number represented by this fragment object.
-     */
-    public int getPageNumber() {
-        return shlokas.size();
-    }
 }
