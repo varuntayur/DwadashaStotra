@@ -15,7 +15,11 @@ public class ShlokaMediaPlayer {
 
     public static void pause() {
         if (mediaPlayer != null) {
-            mediaPlayer.pause();
+            try {
+                mediaPlayer.pause();
+            } catch (IllegalStateException ex) {
+                Log.e(TAG, "Exception while trying to pause mediaplayer");
+            }
         }
     }
 
