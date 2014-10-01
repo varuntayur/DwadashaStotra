@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.vtayur.dwadashastotra.data.model.DwadashaStotra;
 import com.vtayur.dwadashastotra.data.model.Section;
-import com.vtayur.dwadashastotra.detail.ShlokaSlideActivity;
+import com.vtayur.dwadashastotra.detail.stotra.StotraBrowseActivity;
 
 import java.io.Serializable;
 
@@ -19,7 +19,7 @@ public enum DwadashaStotraMenu {
     DEFAULT("Default") {
         @Override
         public void execute(Activity activity, String item, int position, Language language) {
-            Intent intent = new Intent(activity, ShlokaSlideActivity.class);
+            Intent intent = new Intent(activity, StotraBrowseActivity.class);
             intent.putExtra("sectionName", item);
             intent.putExtra("menuPosition", position);
 

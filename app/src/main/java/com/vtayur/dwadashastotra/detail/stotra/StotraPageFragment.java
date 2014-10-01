@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vtayur.dwadashastotra.detail;
+package com.vtayur.dwadashastotra.detail.stotra;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -32,10 +32,11 @@ import android.widget.Toast;
 
 import com.vtayur.dwadashastotra.R;
 import com.vtayur.dwadashastotra.data.model.Shloka;
+import com.vtayur.dwadashastotra.detail.common.ShlokaMediaPlayer;
 
 import java.util.List;
 
-public class ShlokaPageFragment extends Fragment {
+public class StotraPageFragment extends Fragment {
     private static String TAG = "ShlokaPageFragment";
 
     private Typeface customTypeface;
@@ -49,11 +50,11 @@ public class ShlokaPageFragment extends Fragment {
 
     private int resNameId;
 
-    public ShlokaPageFragment() {
+    public StotraPageFragment() {
         // required - other changing orientation will cause issues
     }
 
-    public ShlokaPageFragment(String sectionName, List<Shloka> engShlokas, List<Shloka> localLangShlokas, int position, Typeface tf) {
+    public StotraPageFragment(String sectionName, List<Shloka> engShlokas, List<Shloka> localLangShlokas, int position, Typeface tf) {
         this.shlokas = engShlokas;
         this.localLangShlokas = localLangShlokas;
         this.customTypeface = tf;

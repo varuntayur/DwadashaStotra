@@ -1,14 +1,12 @@
-package com.vtayur.dwadashastotra.detail;
+package com.vtayur.dwadashastotra.detail.common;
 
 
 import android.content.Context;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 
 import com.etsy.android.grid.util.DynamicHeightTextView;
 import com.vtayur.dwadashastotra.R;
@@ -23,7 +21,6 @@ import java.util.Random;
 
 public class StaggeredGridAdapter extends ArrayAdapter<String> {
 
-    private static final String TAG = "StaggeredGridAdapter";
     private static final SparseArray<Double> sPositionHeightRatios = new SparseArray<Double>();
     private final LayoutInflater mLayoutInflater;
     private final Random mRandom;
@@ -50,7 +47,6 @@ public class StaggeredGridAdapter extends ArrayAdapter<String> {
             vh = (ViewHolder) convertView.getTag();
         }
 
-        double positionHeight = getPositionRatio(position);
         int backgroundIndex = position >= mBackgroundColors.size() ?
                 position % mBackgroundColors.size() : position;
 

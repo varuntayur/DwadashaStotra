@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vtayur.dwadashastotra.detail;
+package com.vtayur.dwadashastotra.detail.stotra;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -33,6 +33,7 @@ import com.vtayur.dwadashastotra.R;
 import com.vtayur.dwadashastotra.data.DataProvider;
 import com.vtayur.dwadashastotra.data.Language;
 import com.vtayur.dwadashastotra.data.model.Shloka;
+import com.vtayur.dwadashastotra.detail.common.ZoomOutPageTransformer;
 
 import java.util.List;
 
@@ -45,9 +46,9 @@ import java.util.List;
  * animating the current screen out (to the left) and the next screen in (from the right). The
  * reverse animation is played when the user presses the "previous" button.</p>
  *
- * @see ShlokaPageFragment
+ * @see StotraPageFragment
  */
-public class ShlokaSlideActivity extends FragmentActivity {
+public class StotraBrowseActivity extends FragmentActivity {
 
     private static String TAG = "ShlokaSlideActivity";
 
@@ -120,7 +121,7 @@ public class ShlokaSlideActivity extends FragmentActivity {
     }
 
     /**
-     * A simple pager adapter that represents 5 {@link ShlokaPageFragment} objects, in
+     * A simple pager adapter that represents 5 {@link StotraPageFragment} objects, in
      * sequence.
      */
     private class ShlokaSlidePagerAdapter extends FragmentStatePagerAdapter {
@@ -140,7 +141,7 @@ public class ShlokaSlideActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return new ShlokaPageFragment(sectionName, shlokas, localLangShlokas, position, tf);
+            return new StotraPageFragment(sectionName, shlokas, localLangShlokas, position, tf);
         }
 
         @Override

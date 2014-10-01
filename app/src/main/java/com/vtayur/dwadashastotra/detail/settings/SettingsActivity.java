@@ -1,4 +1,4 @@
-package com.vtayur.dwadashastotra.detail;
+package com.vtayur.dwadashastotra.detail.settings;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

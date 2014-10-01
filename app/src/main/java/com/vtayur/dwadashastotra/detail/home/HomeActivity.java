@@ -1,4 +1,4 @@
-package com.vtayur.dwadashastotra;
+package com.vtayur.dwadashastotra.detail.home;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,12 +17,13 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.etsy.android.grid.StaggeredGridView;
+import com.vtayur.dwadashastotra.R;
 import com.vtayur.dwadashastotra.data.DataProvider;
 import com.vtayur.dwadashastotra.data.DwadashaStotraMenu;
 import com.vtayur.dwadashastotra.data.Language;
 import com.vtayur.dwadashastotra.data.YesNo;
-import com.vtayur.dwadashastotra.detail.SettingsActivity;
-import com.vtayur.dwadashastotra.detail.StaggeredGridAdapter;
+import com.vtayur.dwadashastotra.detail.settings.SettingsActivity;
+import com.vtayur.dwadashastotra.detail.common.StaggeredGridAdapter;
 
 import java.util.List;
 
