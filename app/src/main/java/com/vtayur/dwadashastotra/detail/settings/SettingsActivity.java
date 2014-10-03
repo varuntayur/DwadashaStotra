@@ -51,7 +51,7 @@ public class SettingsActivity extends Activity {
 
                 SharedPreferences settings = getSharedPreferences(DataProvider.PREFS_NAME, 0);
                 SharedPreferences.Editor editor = settings.edit();
-                RadioButton rb = (RadioButton) findViewById(radioGrpLangSelector.getCheckedRadioButtonId());
+                RadioButton rb = (RadioButton) findViewById(radioGrpLearnModeSelector.getCheckedRadioButtonId());
                 editor.putString(DataProvider.LEARNING_MODE, YesNo.getYesNoEnum(rb.getText().toString()).toString());
 
                 editor.commit();

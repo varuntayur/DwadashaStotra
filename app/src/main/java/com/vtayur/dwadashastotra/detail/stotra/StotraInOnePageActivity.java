@@ -16,16 +16,22 @@
 
 package com.vtayur.dwadashastotra.detail.stotra;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.vtayur.dwadashastotra.R;
 import com.vtayur.dwadashastotra.data.DataProvider;
@@ -39,6 +45,10 @@ import java.util.List;
 public class StotraInOnePageActivity extends FragmentActivity {
 
     private static String TAG = "StotraInOnePageActivity";
+
+    private List<Integer> mediaResources;
+    private Iterator<Integer> mediaResIterator;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +68,6 @@ public class StotraInOnePageActivity extends FragmentActivity {
         TextView tvTitle = (TextView) findViewById(R.id.sectiontitle);
         tvTitle.setText(getIntent().getStringExtra("sectionName"));
 
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
         List<Shloka> engShlokas = (List<Shloka>) getIntent().getSerializableExtra("shlokaList");
         List<Shloka> localLangShlokas = (List<Shloka>) getIntent().getSerializableExtra("shlokaListLocalLang");
 
@@ -68,6 +75,9 @@ public class StotraInOnePageActivity extends FragmentActivity {
         Log.d(TAG, "StotraInOnePageActivity needs to render english " + engShlokas.size() + " shlokas");
 
         List<Pair<Shloka, Shloka>> lstPairShlokas = getListPairedShlokas(engShlokas, localLangShlokas);
+
+        mediaResources = getAllMediaResources(getIntent().getStringExtra("sectionName"), localLangShlokas.size());
+        mediaResIterator = mediaResources.iterator();
 
         for (Pair<Shloka, Shloka> shlokaPair : lstPairShlokas) {
             LinearLayout ll = new LinearLayout(this);
@@ -87,7 +97,86 @@ public class StotraInOnePageActivity extends FragmentActivity {
             rootLayout.addView(ll);
         }
 
+        final Activity curActivity = this;
+        ImageButton pauseButton = (ImageButton) findViewById(R.id.imageButtonPause);
+
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d(TAG, "Stopping the stream for media playback");
+
+                Toast.makeText(curActivity, "Pausing sound",
+                        Toast.LENGTH_SHORT).show();
+
+                mediaPlayer.pause();
+
+                ImageButton playButton = (ImageButton) curActivity.findViewById(R.id.imageButtonPlay);
+                playButton.setClickable(true);
+            }
+        });
+
+        ImageButton playButton = (ImageButton) findViewById(R.id.imageButtonPlay);
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mediaResIterator = mediaResources.iterator();
+                playMediaTrack(curActivity);
+                v.setClickable(false);
+
+                Toast.makeText(curActivity, "Starting media playback",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
         Log.d(TAG, "* StotraInOnePageActivity created *");
+    }
+
+    private void playMediaTrack(final Activity curActivity) {
+        if (!mediaResIterator.hasNext()) {
+            Log.d(TAG, "Done with all streams for media playback");
+            ImageButton playButton = (ImageButton) curActivity.findViewById(R.id.imageButtonPlay);
+            playButton.setClickable(true);
+            mediaPlayer.release();
+            return;
+        }
+
+        mediaPlayer = MediaPlayer.create(curActivity, mediaResIterator.next());
+        mediaPlayer.setWakeMode(curActivity.getBaseContext(), PowerManager.SCREEN_DIM_WAKE_LOCK);
+        mediaPlayer.start();
+        Log.d(TAG, "Starting new stream for media playback");
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                Log.d(TAG, "Requesting for continuing next media stream");
+                playMediaTrack(curActivity);
+            }
+        });
+
+        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                Log.d(TAG, "Error encountered streams media playback");
+                ImageButton playButton = (ImageButton) curActivity.findViewById(R.id.imageButtonPlay);
+                playButton.setClickable(true);
+                mediaPlayer.release();
+                return false;
+            }
+        });
+    }
+
+
+    private List<Integer> getAllMediaResources(String sectionName, int numOfResources) {
+        List<Integer> lstRes = new ArrayList<Integer>();
+        for (int i = 1; i < numOfResources; i++) {
+            String resourceName = sectionName.toLowerCase().concat(":").concat(String.valueOf(i)).replaceAll(" ", "").replaceAll(":", "_");
+            int resNameId = getResources().getIdentifier(resourceName, "raw", getPackageName());
+            lstRes.add(resNameId);
+            Log.d(TAG, "ID fetched for packageName " + getPackageName() + " - " + resourceName + " -> " + resNameId);
+        }
+        return lstRes;
     }
 
     private List<Pair<Shloka, Shloka>> getListPairedShlokas(List<Shloka> engShlokas, List<Shloka> localLangShlokas) {
@@ -130,6 +219,12 @@ public class StotraInOnePageActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+        if (mediaPlayer != null) {
+            Log.d(TAG, "************ Attempting to stop media that was initiated with this activity *********");
+            mediaPlayer.release();
+            Log.d(TAG, "************ Release media player resource was successful *********");
+        }
     }
 
     private Typeface getTypeface() {
@@ -148,4 +243,6 @@ public class StotraInOnePageActivity extends FragmentActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(DataProvider.PREFS_NAME, 0);
         return sharedPreferences.getString(DataProvider.SHLOKA_DISP_LANGUAGE, Language.san.toString());
     }
+
+
 }

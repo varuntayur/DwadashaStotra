@@ -85,7 +85,6 @@ public class StotraPageFragment extends Fragment {
         ShlokaMediaPlayer.release();
         Log.d(TAG, "************ Pause media was successful *********");
 
-        super.onStop();
     }
 
     /**
