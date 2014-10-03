@@ -110,9 +110,11 @@ public class StotraInOnePageActivity extends FragmentActivity {
 
                 Toast.makeText(curActivity, "Pausing sound",
                         Toast.LENGTH_SHORT).show();
-
-                mediaPlayer.pause();
-
+                try {
+                    mediaPlayer.pause();
+                } catch (IllegalStateException ex) {
+                    Log.e(TAG, "Exception while trying to stop mediaplayer status.");
+                }
                 ImageButton playButton = (ImageButton) curActivity.findViewById(R.id.imageButtonPlay);
                 playButton.setClickable(true);
             }
@@ -220,12 +222,25 @@ public class StotraInOnePageActivity extends FragmentActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        handleMediaStop();
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
 
+        handleMediaStop();
+    }
+
+    private void handleMediaStop() {
         if (mediaPlayer != null) {
             Log.d(TAG, "************ Attempting to stop media that was initiated with this activity *********");
             mediaPlayer.release();
+            ImageButton playButton = (ImageButton) this.findViewById(R.id.imageButtonPlay);
+            playButton.setClickable(true);
             Log.d(TAG, "************ Release media player resource was successful *********");
         }
     }
