@@ -86,7 +86,7 @@
             android:id="@+id/hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="(If Learning Mode is set to Yes, all shlokas appear in one page)"
+            android:text="(If Learning Mode is set to No, all shlokas appear in one page)"
             android:textStyle=""/>
     </LinearLayout>
 
