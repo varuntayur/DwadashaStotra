@@ -175,7 +175,8 @@ public class StotraInOnePageActivity extends FragmentActivity {
         for (int i = 1; i < numOfResources; i++) {
             String resourceName = sectionName.toLowerCase().concat(":").concat(String.valueOf(i)).replaceAll(" ", "").replaceAll(":", "_");
             int resNameId = getResources().getIdentifier(resourceName, "raw", getPackageName());
-            lstRes.add(resNameId);
+            if (resNameId > 0)
+                lstRes.add(resNameId);
             Log.d(TAG, "ID fetched for packageName " + getPackageName() + " - " + resourceName + " -> " + resNameId);
         }
         return lstRes;
