@@ -18,6 +18,7 @@ package com.vtayur.dwadashastotra.detail.stotra;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -31,35 +32,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vtayur.dwadashastotra.R;
+import com.vtayur.dwadashastotra.data.DataProvider;
+import com.vtayur.dwadashastotra.data.Language;
 import com.vtayur.dwadashastotra.data.model.Shloka;
+import com.vtayur.dwadashastotra.detail.common.BundleArgs;
 import com.vtayur.dwadashastotra.detail.common.ShlokaMediaPlayer;
 
+import java.util.Collections;
 import java.util.List;
 
 public class StotraPageFragment extends Fragment {
     private static String TAG = "ShlokaPageFragment";
 
-    private Typeface customTypeface;
-
-    private String sectionName;
-
-    private List<Shloka> shlokas;
-    private List<Shloka> localLangShlokas;
-
-    private int mPageNumber;
-
     private int resNameId;
 
     public StotraPageFragment() {
-        // required - other changing orientation will cause issues
-    }
-
-    public StotraPageFragment(String sectionName, List<Shloka> engShlokas, List<Shloka> localLangShlokas, int position, Typeface tf) {
-        this.shlokas = engShlokas;
-        this.localLangShlokas = localLangShlokas;
-        this.customTypeface = tf;
-        this.mPageNumber = position;
-        this.sectionName = sectionName;
     }
 
     @Override
@@ -80,35 +67,82 @@ public class StotraPageFragment extends Fragment {
     public void onStop() {
         super.onStop();
 
-
         Log.d(TAG, "************ Attempting to stop media that was initiated with this fragment *********");
         ShlokaMediaPlayer.release();
         Log.d(TAG, "************ Pause media was successful *********");
 
     }
 
-    /**
-     * Returns the page number represented by this fragment object.
-     */
+    public String getSectionName() {
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            if (bundle.containsKey(BundleArgs.SECTION_NAME))
+                return bundle.getString(BundleArgs.SECTION_NAME);
+        }
+        return "";
+    }
+
+    public List<Shloka> getEngShlokas() {
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            if (bundle.containsKey(BundleArgs.ENG_SHLOKA_LIST))
+                return (List<Shloka>) bundle.getSerializable(BundleArgs.ENG_SHLOKA_LIST);
+        }
+        return Collections.emptyList();
+    }
+
+    public List<Shloka> getLocalLangShlokas() {
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            if (bundle.containsKey(BundleArgs.LOCAL_LANG_SHLOKA_LIST))
+                return (List<Shloka>) bundle.getSerializable(BundleArgs.LOCAL_LANG_SHLOKA_LIST);
+        }
+        return Collections.emptyList();
+    }
+
     public int getPageNumber() {
-        return shlokas.size();
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            if (bundle.containsKey(BundleArgs.PAGE_NUMBER))
+                return bundle.getInt(BundleArgs.PAGE_NUMBER);
+        }
+        return 1;
+    }
+
+
+    private Typeface getTypeface() {
+        String langPrefs = getSelectedLanguage();
+
+        Log.d(TAG, "Trying to launch activity in selected language :" + langPrefs);
+
+        Language lang = Language.getLanguageEnum(langPrefs);
+
+        Log.d(TAG, "Will get assets for activity in language :" + lang.toString());
+
+        return lang.getTypeface(this.getActivity().getAssets());
+    }
+
+    private String getSelectedLanguage() {
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(DataProvider.PREFS_NAME, 0);
+        return sharedPreferences.getString(DataProvider.SHLOKA_DISP_LANGUAGE, Language.san.toString());
     }
 
     private ViewGroup intializeView(LayoutInflater inflater, ViewGroup container) {
 
         final Activity curActivity = this.getActivity();
+        Typeface customTypeface = getTypeface();
 
         // Inflate the layout containing a title and body text.
         ViewGroup rootView = (ViewGroup) inflater
                 .inflate(R.layout.fragment_shloka_slide_page, container, false);
 
-        String displayPageNumber = String.valueOf(mPageNumber + 1);
+        String displayPageNumber = String.valueOf(getPageNumber() + 1);
 
         TextView secTitleViewById = (TextView) rootView.findViewById(R.id.sectiontitle);
-        secTitleViewById.setText(sectionName + " ( " + displayPageNumber + " / " + shlokas.size() + " )");
+        secTitleViewById.setText(getSectionName() + " ( " + displayPageNumber + " / " + getEngShlokas().size() + " )");
 
-        final Shloka shloka = shlokas.get(mPageNumber);
-        final Shloka localLangShloka = localLangShlokas.get(mPageNumber);
+        final Shloka shloka = getEngShlokas().get(getPageNumber());
+        final Shloka localLangShloka = getLocalLangShlokas().get(getPageNumber());
 
         TextView shlokaText = (TextView) rootView.findViewById(R.id.shlokalocallangtext);
         shlokaText.setTypeface(customTypeface);
@@ -129,7 +163,7 @@ public class StotraPageFragment extends Fragment {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(curActivity, "Pausing sound",
+                Toast.makeText(curActivity, "Stopping media playback",
                         Toast.LENGTH_SHORT).show();
 
                 ShlokaMediaPlayer.pause();
@@ -155,7 +189,7 @@ public class StotraPageFragment extends Fragment {
                     return;
                 }
 
-                Toast.makeText(curActivity, "Playing sound",
+                Toast.makeText(curActivity, "Playing media",
                         Toast.LENGTH_SHORT).show();
 
             }
@@ -164,8 +198,8 @@ public class StotraPageFragment extends Fragment {
     }
 
     private int getResourceName(Activity curActivity) {
-        String displayPageNumber = String.valueOf(mPageNumber + 1);
-        String resourceName = sectionName.toLowerCase().concat(":").concat(displayPageNumber).replaceAll(" ", "").replaceAll(":", "_");
+        String displayPageNumber = String.valueOf(getPageNumber() + 1);
+        String resourceName = getSectionName().toLowerCase().concat(":").concat(displayPageNumber).replaceAll(" ", "").replaceAll(":", "_");
         int resNameId = curActivity.getResources().getIdentifier(resourceName, "raw", curActivity.getPackageName());
         Log.d(TAG, "ID fetched for packageName " + curActivity.getPackageName() + " - " + resourceName + " -> " + resNameId);
         return resNameId;

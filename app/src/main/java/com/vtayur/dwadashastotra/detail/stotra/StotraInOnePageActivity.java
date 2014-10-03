@@ -37,6 +37,7 @@ import com.vtayur.dwadashastotra.R;
 import com.vtayur.dwadashastotra.data.DataProvider;
 import com.vtayur.dwadashastotra.data.Language;
 import com.vtayur.dwadashastotra.data.model.Shloka;
+import com.vtayur.dwadashastotra.detail.common.BundleArgs;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,21 +63,22 @@ public class StotraInOnePageActivity extends FragmentActivity {
 
         final LinearLayout rootLayout = (LinearLayout) findViewById(R.id.rootLayout);
 
-        Integer menuPosition = getIntent().getIntExtra("menuPosition", 0);
+        Integer menuPosition = getIntent().getIntExtra(BundleArgs.PAGE_NUMBER, 0);
+        List<Shloka> engShlokas = (List<Shloka>) getIntent().getSerializableExtra(BundleArgs.ENG_SHLOKA_LIST);
+        List<Shloka> localLangShlokas = (List<Shloka>) getIntent().getSerializableExtra(BundleArgs.LOCAL_LANG_SHLOKA_LIST);
+        String sectionName = getIntent().getStringExtra(BundleArgs.SECTION_NAME);
+
         rootLayout.setBackgroundResource(DataProvider.getBackgroundColor(menuPosition - 1));
 
         TextView tvTitle = (TextView) findViewById(R.id.sectiontitle);
-        tvTitle.setText(getIntent().getStringExtra("sectionName"));
-
-        List<Shloka> engShlokas = (List<Shloka>) getIntent().getSerializableExtra("shlokaList");
-        List<Shloka> localLangShlokas = (List<Shloka>) getIntent().getSerializableExtra("shlokaListLocalLang");
+        tvTitle.setText(sectionName);
 
         Log.d(TAG, "StotraInOnePageActivity needs to render " + localLangShlokas.size() + " shlokas");
         Log.d(TAG, "StotraInOnePageActivity needs to render english " + engShlokas.size() + " shlokas");
 
         List<Pair<Shloka, Shloka>> lstPairShlokas = getListPairedShlokas(engShlokas, localLangShlokas);
 
-        mediaResources = getAllMediaResources(getIntent().getStringExtra("sectionName"), localLangShlokas.size());
+        mediaResources = getAllMediaResources(sectionName, localLangShlokas.size());
         mediaResIterator = mediaResources.iterator();
 
         for (Pair<Shloka, Shloka> shlokaPair : lstPairShlokas) {

@@ -33,22 +33,15 @@ import com.vtayur.dwadashastotra.R;
 import com.vtayur.dwadashastotra.data.DataProvider;
 import com.vtayur.dwadashastotra.data.Language;
 import com.vtayur.dwadashastotra.data.model.Shloka;
+import com.vtayur.dwadashastotra.detail.common.BundleArgs;
 import com.vtayur.dwadashastotra.detail.common.ZoomOutPageTransformer;
 
+import java.io.Serializable;
 import java.util.List;
 
-/**
- * Demonstrates a "screen-slide" animation using a {@link android.support.v4.view.ViewPager}. Because {@link android.support.v4.view.ViewPager}
- * automatically plays such an animation when calling {@link android.support.v4.view.ViewPager#setCurrentItem(int)}, there
- * isn't any animation-specific code in this sample.
- * <p/>
- * <p>This sample shows a "next" button that advances the user to the next step in a wizard,
- * animating the current screen out (to the left) and the next screen in (from the right). The
- * reverse animation is played when the user presses the "previous" button.</p>
- *
- * @see StotraPageFragment
- */
 public class StotraSlideBrowseActivity extends FragmentActivity {
+
+
 
     private static String TAG = "ShlokaSlideActivity";
 
@@ -65,14 +58,13 @@ public class StotraSlideBrowseActivity extends FragmentActivity {
         ViewPager mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
-
-        Integer menuPosition = getIntent().getIntExtra("menuPosition", 0);
+        Integer menuPosition = getIntent().getIntExtra(BundleArgs.PAGE_NUMBER, 0);
         mPager.setBackgroundResource(DataProvider.getBackgroundColor(menuPosition - 1));
 
-        String mSectionName = getIntent().getStringExtra("sectionName");
-        List<Shloka> engShlokas = (List<Shloka>) getIntent().getSerializableExtra("shlokaList");
+        String mSectionName = getIntent().getStringExtra(BundleArgs.SECTION_NAME);
+        List<Shloka> engShlokas = (List<Shloka>) getIntent().getSerializableExtra(BundleArgs.ENG_SHLOKA_LIST);
 
-        List<Shloka> localLangShlokas = (List<Shloka>) getIntent().getSerializableExtra("shlokaListLocalLang");
+        List<Shloka> localLangShlokas = (List<Shloka>) getIntent().getSerializableExtra(BundleArgs.LOCAL_LANG_SHLOKA_LIST);
 
         PagerAdapter mPagerAdapter = new ShlokaSlidePagerAdapter(mSectionName, engShlokas, localLangShlokas, getFragmentManager(), langTypeface);
 
@@ -126,6 +118,7 @@ public class StotraSlideBrowseActivity extends FragmentActivity {
      */
     private class ShlokaSlidePagerAdapter extends FragmentStatePagerAdapter {
 
+
         private final Typeface tf;
         private final String sectionName;
         private List<Shloka> shlokas;
@@ -141,7 +134,14 @@ public class StotraSlideBrowseActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return new StotraPageFragment(sectionName, shlokas, localLangShlokas, position, tf);
+            StotraPageFragment stotraPageFragment = new StotraPageFragment();
+            Bundle bundleArgs = new Bundle();
+            bundleArgs.putString(BundleArgs.SECTION_NAME, sectionName);
+            bundleArgs.putSerializable(BundleArgs.ENG_SHLOKA_LIST, (Serializable) shlokas);
+            bundleArgs.putSerializable(BundleArgs.LOCAL_LANG_SHLOKA_LIST, (Serializable) localLangShlokas);
+            bundleArgs.putInt(BundleArgs.PAGE_NUMBER, position);
+            stotraPageFragment.setArguments(bundleArgs);
+            return stotraPageFragment;
         }
 
         @Override

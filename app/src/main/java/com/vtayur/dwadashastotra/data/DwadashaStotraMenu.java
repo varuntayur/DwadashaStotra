@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.vtayur.dwadashastotra.data.model.DwadashaStotra;
 import com.vtayur.dwadashastotra.data.model.Section;
+import com.vtayur.dwadashastotra.detail.common.BundleArgs;
 import com.vtayur.dwadashastotra.detail.stotra.StotraInOnePageActivity;
 import com.vtayur.dwadashastotra.detail.stotra.StotraSlideBrowseActivity;
 
@@ -30,20 +30,16 @@ public enum DwadashaStotraMenu {
             else
                 intent = new Intent(activity, StotraInOnePageActivity.class);
 
-            intent.putExtra("sectionName", item);
-            intent.putExtra("menuPosition", position);
+            Section secEngStotra = DataProvider.getDwadashaStotra(Language.eng).getSection(item);
 
-            Section section = DataProvider.getDwadashaStotra(Language.eng).getSection(item);
+            Section secLocalLangStotra = DataProvider.getDwadashaStotra(language).getSection(item);
 
-            if (section == null) return;
+            intent.putExtra(BundleArgs.SECTION_NAME, item);
+            intent.putExtra(BundleArgs.PAGE_NUMBER, position);
+            intent.putExtra(BundleArgs.ENG_SHLOKA_LIST, (Serializable) secEngStotra.getShlokaList());
+            intent.putExtra(BundleArgs.LOCAL_LANG_SHLOKA_LIST, (Serializable) secLocalLangStotra.getShlokaList());
 
-            intent.putExtra("shlokaList", (Serializable) section.getShlokaList());
-
-            DwadashaStotra sanVayuStuthi = DataProvider.getDwadashaStotra(language);
-            section = sanVayuStuthi.getSection(item);
-            Log.d(TAG, "item section ->" + item + " " + section);
-            intent.putExtra("shlokaListLocalLang", (Serializable) section.getShlokaList());
-
+            Log.d(TAG, "Starting activity with english and " + language);
             activity.startActivity(intent);
         }
     };
