@@ -179,6 +179,8 @@ public class StotraPageFragment extends Fragment {
 
                 if (resNameId == 0) return;
 
+                ShlokaMediaPlayer.setLoopCounter(getShlokaRepeatCount());
+
                 String playStatus = ShlokaMediaPlayer.play(getActivity(), resNameId);
 
                 if (!playStatus.isEmpty()) {
@@ -212,5 +214,10 @@ public class StotraPageFragment extends Fragment {
             pauseButton.setVisibility(View.VISIBLE);
     }
 
+    public int getShlokaRepeatCount() {
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(DataProvider.PREFS_NAME, 0);
+        String repeatShloka = sharedPreferences.getString(DataProvider.REPEAT_SHLOKA, DataProvider.REPEAT_SHLOKA_DEFAULT);
+        return Integer.valueOf(repeatShloka);
+    }
 
 }

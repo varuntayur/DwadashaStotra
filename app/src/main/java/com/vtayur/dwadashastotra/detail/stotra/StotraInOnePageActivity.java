@@ -42,6 +42,7 @@ import com.vtayur.dwadashastotra.detail.common.BundleArgs;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StotraInOnePageActivity extends FragmentActivity {
 
@@ -50,6 +51,7 @@ public class StotraInOnePageActivity extends FragmentActivity {
     private List<Integer> mediaResources;
     private Iterator<Integer> mediaResIterator;
     private MediaPlayer mediaPlayer;
+    private AtomicInteger playCounter = new AtomicInteger();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +128,7 @@ public class StotraInOnePageActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 mediaResIterator = mediaResources.iterator();
+                playCounter.set(getShlokaRepeatCount());
                 playMediaTrack(curActivity);
                 v.setClickable(false);
 
@@ -142,18 +145,37 @@ public class StotraInOnePageActivity extends FragmentActivity {
             Log.d(TAG, "Done with all streams for media playback");
             ImageButton playButton = (ImageButton) curActivity.findViewById(R.id.imageButtonPlay);
             playButton.setClickable(true);
-            mediaPlayer.release();
+            if(mediaPlayer!=null) {
+                mediaPlayer.reset();
+                mediaPlayer.release();
+                mediaPlayer=null;
+            }
+
+            Log.d(TAG, "playMediaTrack, how many more to go? " + playCounter.get());
+            if(playCounter.decrementAndGet() >= 0) {
+                Log.d(TAG, "playMediaTrack, how many more to go? " + playCounter.get());
+                mediaResIterator = mediaResources.iterator();
+                playMediaTrack(curActivity);
+                return;
+            }
             return;
         }
 
-        mediaPlayer = MediaPlayer.create(curActivity, mediaResIterator.next());
+        Integer nextResource = mediaResIterator.next();
+        mediaPlayer = MediaPlayer.create(curActivity, nextResource);
         mediaPlayer.setWakeMode(curActivity.getBaseContext(), PowerManager.SCREEN_DIM_WAKE_LOCK);
         mediaPlayer.start();
-        Log.d(TAG, "Starting new stream for media playback");
+        Log.d(TAG, "Starting new stream for media playback " + nextResource);
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                Log.d(TAG, "Release before next media stream is played");
+                if(mediaPlayer!=null) {
+                    mediaPlayer.reset();
+                    mediaPlayer.release();
+                    mediaPlayer=null;
+                }
                 Log.d(TAG, "Requesting for continuing next media stream");
                 playMediaTrack(curActivity);
             }
@@ -165,7 +187,11 @@ public class StotraInOnePageActivity extends FragmentActivity {
                 Log.d(TAG, "Error encountered streams media playback");
                 ImageButton playButton = (ImageButton) curActivity.findViewById(R.id.imageButtonPlay);
                 playButton.setClickable(true);
-                mediaPlayer.release();
+                if(mediaPlayer!=null) {
+                    mediaPlayer.reset();
+                    mediaPlayer.release();
+                    mediaPlayer=null;
+                }
                 return false;
             }
         });
@@ -174,7 +200,7 @@ public class StotraInOnePageActivity extends FragmentActivity {
 
     private List<Integer> getAllMediaResources(String sectionName, int numOfResources) {
         List<Integer> lstRes = new ArrayList<Integer>();
-        for (int i = 1; i < numOfResources; i++) {
+        for (int i = 1; i <= numOfResources; i++) {
             String resourceName = sectionName.toLowerCase().concat(":").concat(String.valueOf(i)).replaceAll(" ", "").replaceAll(":", "_");
             int resNameId = getResources().getIdentifier(resourceName, "raw", getPackageName());
             if (resNameId > 0)
@@ -262,5 +288,9 @@ public class StotraInOnePageActivity extends FragmentActivity {
         return sharedPreferences.getString(DataProvider.SHLOKA_DISP_LANGUAGE, Language.san.toString());
     }
 
-
+    public int getShlokaRepeatCount() {
+        SharedPreferences sharedPreferences = getSharedPreferences(DataProvider.PREFS_NAME, 0);
+        String repeatShloka = sharedPreferences.getString(DataProvider.REPEAT_SHLOKA, DataProvider.REPEAT_SHLOKA_DEFAULT);
+        return Integer.valueOf(repeatShloka);
+    }
 }

@@ -24,7 +24,7 @@
             android:uiOptions="splitActionBarWhenNarrow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".home.HomeActivity"/>
+                android:value=".detail.home.HomeActivity"/>
         </activity>
 
         <activity
@@ -34,7 +34,7 @@
             android:uiOptions="splitActionBarWhenNarrow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".home.HomeActivity"/>
+                android:value=".detail.home.HomeActivity"/>
         </activity>
 
         <activity
@@ -44,7 +44,7 @@
             android:uiOptions="splitActionBarWhenNarrow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".home.HomeActivity"/>
+                android:value="detail.home.HomeActivity"/>
         </activity>
 
 

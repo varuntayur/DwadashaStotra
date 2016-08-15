@@ -27,6 +27,8 @@ public class DataProvider {
     public static final String PREFS_NAME = "DwadashaStotra";
     public static final String SHLOKA_DISP_LANGUAGE = "localLanguage";
     public static final String LEARNING_MODE = "learningMode";
+    public static final String REPEAT_SHLOKA = "repeatShlokaCount" ;
+    public static final String REPEAT_SHLOKA_DEFAULT = "3";
 
     private static Map<String, DwadashaStotra> lang2DwadashaStotra = new ConcurrentHashMap<String, DwadashaStotra>();
 

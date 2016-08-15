@@ -86,8 +86,46 @@
             android:id="@+id/hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="(If Learning Mode is set to No, all shlokas appear in one page)"
-            android:textStyle=""/>
+            android:text="Select No, if you want all shloka's in single page"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/repeatShlokaLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repeat Shloka"
+            android:textStyle="bold"
+            android:paddingTop="10dp"
+            />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <NumberPicker
+                android:id="@+id/repeatShlokasCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                />
+
+            <TextView
+                android:id="@+id/repeatShlokaTimesLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="times"
+                android:paddingTop="70dp"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
