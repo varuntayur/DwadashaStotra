@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import com.etsy.android.grid.util.DynamicHeightTextView;
 import com.vtayur.dwadashastotra.R;
 import com.vtayur.dwadashastotra.data.DataProvider;
 
@@ -40,7 +39,7 @@ public class StaggeredGridAdapter extends ArrayAdapter<String> {
         if (convertView == null) {
             convertView = mLayoutInflater.inflate(R.layout.list_item_sample, parent, false);
             vh = new ViewHolder();
-            vh.txtLineOne = (DynamicHeightTextView) convertView.findViewById(R.id.txt_line1);
+//            vh.txtLineOne = (DynamicHeightTextView) convertView.findViewById(R.id.txt_line1);
 
             convertView.setTag(vh);
         } else {
@@ -55,8 +54,8 @@ public class StaggeredGridAdapter extends ArrayAdapter<String> {
 //        Log.d(TAG, "getView position:" + position + " h:" + positionHeight);
 
 //        vh.txtLineOne.setHeightRatio(positionHeight);
-        vh.txtLineOne.setHeightRatio(1.5);
-        vh.txtLineOne.setText(getItem(position));
+//        vh.txtLineOne.setHeightRatio(1.5);
+//        vh.txtLineOne.setText(getItem(position));
 
         return convertView;
     }
@@ -80,6 +79,6 @@ public class StaggeredGridAdapter extends ArrayAdapter<String> {
     }
 
     static class ViewHolder {
-        DynamicHeightTextView txtLineOne;
+//        DynamicHeightTextView txtLineOne;
     }
 }

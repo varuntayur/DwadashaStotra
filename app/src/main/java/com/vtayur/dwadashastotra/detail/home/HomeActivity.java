@@ -8,26 +8,28 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.etsy.android.grid.StaggeredGridView;
 import com.vtayur.dwadashastotra.R;
 import com.vtayur.dwadashastotra.data.DataProvider;
-import com.vtayur.dwadashastotra.data.DwadashaStotraMenu;
 import com.vtayur.dwadashastotra.data.Language;
 import com.vtayur.dwadashastotra.data.YesNo;
+import com.vtayur.dwadashastotra.detail.common.CustomAdapter;
 import com.vtayur.dwadashastotra.detail.settings.SettingsActivity;
-import com.vtayur.dwadashastotra.detail.common.StaggeredGridAdapter;
 
 import java.util.List;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends AppCompatActivity {
 
     private static String TAG = "HomeActivity";
     private ProgressDialog progressDialog;
@@ -36,7 +38,7 @@ public class HomeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_sgv);
+        setContentView(R.layout.activity_main);
 
         progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.loading_please_wait), true);
 
@@ -79,9 +81,7 @@ public class HomeActivity extends Activity {
                 break;
         }
 
-        return super.
-
-                onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -99,24 +99,18 @@ public class HomeActivity extends Activity {
             runOnUiThread(new Runnable() {
                 public void run() {
 
-                    StaggeredGridView listView = (StaggeredGridView) findViewById(R.id.grid_view);
-
-                    View header = inflater.inflate(R.layout.list_item_header_footer, null);
-                    TextView txtHeaderTitle = (TextView) header.findViewById(R.id.txt_title);
-                    txtHeaderTitle.setText(getResources().getString(R.string.app_name));
-
-                    listView.addHeaderView(header);
-                    header.setClickable(false);
-
-                    StaggeredGridAdapter mAdapter = new StaggeredGridAdapter(activity, R.id.txt_line1);
+                    TextView viewById = (TextView)findViewById(R.id.txt_title);
+                    viewById.setText(R.string.app_name);
 
                     final List<String> sectionNames = DataProvider.getMenuNames();
+                    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-                    for (String data : sectionNames) {
-                        mAdapter.add(data);
-                    }
-                    listView.setAdapter(mAdapter);
-                    listView.setOnItemClickListener(getOnMenuClickListener(activity));
+                    // set a StaggeredGridLayoutManager with 3 number of columns and vertical orientation
+                    StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL);
+                    recyclerView.setLayoutManager(staggeredGridLayoutManager);
+
+                    CustomAdapter customAdapter = new CustomAdapter(activity, sectionNames);
+                    recyclerView.setAdapter(customAdapter); // set the Adapter to RecyclerView
 
                     SharedPreferences settings = getSharedPreferences(DataProvider.PREFS_NAME, 0);
                     String isLocalLangAlreadySaved = settings.getString(DataProvider.SHLOKA_DISP_LANGUAGE, "");
@@ -143,19 +137,6 @@ public class HomeActivity extends Activity {
             });
             Log.d(TAG, "Finished launching main-menu");
 
-        }
-
-        private AdapterView.OnItemClickListener getOnMenuClickListener(final Activity activity) {
-            return new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String item = (String) parent.getAdapter().getItem(position);
-
-                    String langSelected = getSharedPreferences(DataProvider.PREFS_NAME, 0).getString(DataProvider.SHLOKA_DISP_LANGUAGE, "");
-                    DwadashaStotraMenu.getEnum(item).execute(activity, item, position, Language.getLanguageEnum(langSelected));
-
-                }
-            };
         }
 
         @Override

@@ -59,7 +59,7 @@ public class StotraSlideBrowseActivity extends FragmentActivity {
         mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
         Integer menuPosition = getIntent().getIntExtra(BundleArgs.PAGE_NUMBER, 0);
-        mPager.setBackgroundResource(DataProvider.getBackgroundColor(menuPosition - 1));
+        mPager.setBackgroundResource(DataProvider.getBackgroundColor((menuPosition - 1) < 0 ? 1 : menuPosition - 1));
 
         String mSectionName = getIntent().getStringExtra(BundleArgs.SECTION_NAME);
         List<Shloka> engShlokas = (List<Shloka>) getIntent().getSerializableExtra(BundleArgs.ENG_SHLOKA_LIST);
