@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -99,8 +100,8 @@ public class HomeActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 public void run() {
 
-                    TextView viewById = (TextView)findViewById(R.id.txt_title);
-                    viewById.setText(R.string.app_name);
+//                    TextView viewById = (TextView)findViewById(R.id.txt_title);
+//                    viewById.setText(R.string.app_name);
 
                     final List<String> sectionNames = DataProvider.getMenuNames();
                     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -146,5 +147,11 @@ public class HomeActivity extends AppCompatActivity {
             Log.d(TAG, "Finished background task execution.");
             return 1l;
         }
+    }
+
+    public void launchMadhvanama(View v) {
+        Intent intent = new Intent("android.intent.action.VIEW");
+        intent.setData(Uri.parse("market://details?id=com.vtayur.madhvanama"));
+        startActivity(intent);
     }
 }
