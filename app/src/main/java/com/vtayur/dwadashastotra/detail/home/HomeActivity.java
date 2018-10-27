@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -18,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.vtayur.dwadashastotra.R;
@@ -108,7 +108,19 @@ public class HomeActivity extends AppCompatActivity {
 
                     // set a StaggeredGridLayoutManager with 3 number of columns and vertical orientation
                     StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL);
-                    recyclerView.setLayoutManager(staggeredGridLayoutManager);
+
+                    GridLayoutManager layoutManager = new GridLayoutManager(activity, 2);
+
+                    layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                        @Override
+                        public int getSpanSize(int position) {
+                            if (position > 0)
+                                return 1;
+                            else
+                                return 2;
+                        }
+                    });
+                    recyclerView.setLayoutManager(layoutManager);
 
                     CustomAdapter customAdapter = new CustomAdapter(activity, sectionNames);
                     recyclerView.setAdapter(customAdapter); // set the Adapter to RecyclerView
