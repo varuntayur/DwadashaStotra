@@ -1,21 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
         applicationId "com.vtayur.dwadashastotra"
         minSdkVersion 14
-        versionCode 7
-        versionName "1.4.0"
+        targetSdkVersion 29
+        versionCode 9
+        versionName "1.6.0"
     }
     signingConfigs {
         release {
             storeFile file("my-release-key.keystore")
-            storePassword "vd87h672"
             keyAlias "alias_name"
-            keyPassword "vd87h672"
         }
     }
     buildTypes {
@@ -35,8 +34,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation files('libs/simple-xml-2.7.1.jar')
-    implementation 'com.android.support:support-v13:27.1.1'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 }
